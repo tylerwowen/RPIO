@@ -32,6 +32,7 @@
 #include <sys/mman.h>
 #include "c_gpio.h"
 #include <stdio.h>
+#include <string.h>
 
 #define BCM2708_PERI_BASE   0x20000000
 #define BCM2709_PERI_BASE   0x3f000000
@@ -108,7 +109,7 @@ setup(void)
         gpio_map = (uint32_t *)mmap( (caddr_t)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2708_PERI_BASE + 0x200000);
 		}
     else{
-        gpio_map = (uint32_t *)mmap( (caddr_t)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000));
+        gpio_map = (uint32_t *)mmap( (caddr_t)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000);
     }
     if ((uint32_t)gpio_map < 0)
         return SETUP_MMAP_FAIL;
