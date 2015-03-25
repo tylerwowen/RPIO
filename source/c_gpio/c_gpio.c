@@ -55,17 +55,21 @@
 static volatile uint32_t *gpio_map;
 int GPIO_BASE = 0x20000000 + 0x200000; //default base for Pi 1
 
-int get_CPU_info(){
+void get_CPU_info(){
 	FILE *fp;
+	char buffer[1024];
+	char hardware[1024];
 	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
 		return -1;
 	while(!feof(fp)) {
 		fgets(buffer, sizeof(buffer) , fp);
+		sscanf(buffer, "Hardware	: %s", hardware);
 		// BCM2709 for Pi 2, change base for Pi 2
 		if (strcmp(hardware, "BCM2709") == 0){
 			GPIO_BASE = 0x3f200000;
 		}
 	fclose(fp);
+	}
 }
 
 // `short_wait` waits 150 cycles
@@ -93,6 +97,8 @@ setup(void)
 
     if ((uint32_t)gpio_mem % PAGE_SIZE)
         gpio_mem += PAGE_SIZE - ((uint32_t)gpio_mem % PAGE_SIZE);
+
+		get_CPU_info();
 
     gpio_map = (uint32_t *)mmap( (caddr_t)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, GPIO_BASE);
 
