@@ -31,9 +31,10 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include "c_gpio.h"
+#include <stdio.h>
 
-#define BCM2708_PERI_BASE   0x20000000
-#define GPIO_BASE           (BCM2708_PERI_BASE + 0x200000)
+//#define BCM2708_PERI_BASE   0x20000000
+//#define GPIO_BASE           (BCM2708_PERI_BASE + 0x200000)
 #define OFFSET_FSEL         0   // 0x0000
 #define OFFSET_SET          7   // 0x001c / 4
 #define OFFSET_CLR          10  // 0x0028 / 4
@@ -52,6 +53,20 @@
 #define BLOCK_SIZE (4*1024)
 
 static volatile uint32_t *gpio_map;
+int GPIO_BASE = 0x20000000 + 0x200000; //default base for Pi 1
+
+int get_CPU_info(){
+	FILE *fp;
+	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
+		return -1;
+	while(!feof(fp)) {
+		fgets(buffer, sizeof(buffer) , fp);
+		// BCM2709 for Pi 2, change base for Pi 2
+		if (strcmp(hardware, "BCM2709") == 0){
+			GPIO_BASE = 0x3f200000;
+		}
+	fclose(fp);
+}
 
 // `short_wait` waits 150 cycles
 void
