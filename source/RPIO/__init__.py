@@ -163,6 +163,25 @@ MODEL_DATA = {
     'a21041': ('Pi 2 B', '1.0', 1024, 'EMBEST')
 }
 
+# Consider a parser for the new scheme 
+#SRRR MMMM PPPP TTTT TTTT VVVV
+#
+#S scheme (0=old, 1=new)
+#R RAM (0=256, 1=512, 2=1024)
+#M manufacturer (0='SONY',1='EGOMAN',2='EMBEST',3='UNKNOWN',4='EMBEST')
+#P processor (0=2835, 1=2836)
+#T type (0='A', 1='B', 2='A+', 3='B+', 4='Pi 2 B', 5='Alpha', 6='Compute Module')
+#V revision (0-15)
+#
+#1010 0010 0001 0000 0100 0001
+#SRRR MMMM PPPP TTTT TTTT VVVV
+#S=1 new scheme
+#R=2 1024 MB
+#M=2 EMBEST
+#P=1 2836
+#T=4 Pi 2 B
+#V=1 1
+
 # List of valid bcm gpio ids for raspberry rev1 and rev2. Used for inspect-all.
 GPIO_LIST_R1 = (0, 1, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 21, 22, 23, 24, 25)
 GPIO_LIST_R2 = (2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22, 23, 24, 25, \
