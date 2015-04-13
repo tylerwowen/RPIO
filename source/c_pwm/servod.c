@@ -107,15 +107,15 @@ static uint8_t gpio_list[] = {
                               PAGE_SIZE - 1) >> PAGE_SHIFT)
 
 // Memory Addresses
-#define DMA_BASE        0x20007000
+#define DMA_BASE        0x3f007000
 #define DMA_LEN         0x24
-#define PWM_BASE        0x2020C000
+#define PWM_BASE        0x3f20C000
 #define PWM_LEN         0x28
-#define CLK_BASE        0x20101000
+#define CLK_BASE        0x3f101000
 #define CLK_LEN         0xA8
-#define GPIO_BASE       0x20200000
+#define GPIO_BASE       0x3f200000
 #define GPIO_LEN        0x100
-#define PCM_BASE        0x20203000
+#define PCM_BASE        0x3f203000
 #define PCM_LEN         0x24
 
 #define DMA_NO_WIDE_BURSTS  (1<<26)
