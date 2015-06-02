@@ -514,7 +514,7 @@ make_pagemap(int channel)
             return fatal("rpio-pwm: Failed to read %s: %m\n", pagemap_fn);
         if (((pfn >> 55) & 0x1bf) != 0x10c)
             return fatal("rpio-pwm: Page %d not present (pfn 0x%016llx)\n", i, pfn);
-        channels[channel].page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0x40000000;
+        channels[channel].page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0xc0000000;
     }
     close(fd);
     close(memfd);

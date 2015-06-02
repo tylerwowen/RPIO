@@ -374,7 +374,7 @@ make_pagemap(void)
             fatal("rpio-pwm: Failed to read %s: %m\n", pagemap_fn);
         if (((pfn >> 55) & 0x1bf) != 0x10c)
             fatal("rpio-pwm: Page %d not present (pfn 0x%016llx)\n", i, pfn);
-        page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0x40000000;
+        page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0xc0000000;
     }
     close(fd);
     close(memfd);
