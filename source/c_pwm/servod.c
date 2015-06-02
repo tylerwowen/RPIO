@@ -108,7 +108,7 @@ static uint8_t gpio_list[] = {
 
 // Memory Addresses
 #define DMA_BASE        0x3f007000
-#define DMA_LEN         0x24
+#define DMA_LEN         0xf00
 #define PWM_BASE        0x3f20C000
 #define PWM_LEN         0x28
 #define CLK_BASE        0x3f101000
@@ -392,9 +392,9 @@ init_ctrl_data(void)
     int servo, i;
 
     if (delay_hw == DELAY_VIA_PWM)
-        phys_fifo_addr = (PWM_BASE | 0x7e000000) + 0x18;
+        phys_fifo_addr = 0x7e20C000 + 0x18;
     else
-        phys_fifo_addr = (PCM_BASE | 0x7e000000) + 0x04;
+        phys_fifo_addr = 0x7e203000 + 0x04;
 
     memset(ctl->sample, 0, sizeof(ctl->sample));
     for (servo = 0 ; servo < NUM_GPIOS; servo++) {

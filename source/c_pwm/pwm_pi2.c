@@ -51,13 +51,13 @@
  * PULSE WIDTH INCREMENT GRANULARITY
  * ---------------------------------
  * Another very important setting is the pulse width increment granularity, which
- * defaults to 10µs and is used for _all_ DMA channels (since its passed to the PWM
+ * defaults to 10Âµs and is used for _all_ DMA channels (since its passed to the PWM
  * timing hardware). Under the hood you need to set the pulse widths as multiples
- * of the increment-granularity. Eg. in order to set 500µs pulses with a granularity
- * setting of 10µs, you'll need to set the pulse-width as 50 (50 * 10µs = 500µs).
+ * of the increment-granularity. Eg. in order to set 500Âµs pulses with a granularity
+ * setting of 10Âµs, you'll need to set the pulse-width as 50 (50 * 10Âµs = 500Âµs).
  * Less granularity needs more DMA memory.
  *
- * To achieve shorter pulses than 10µs, you simply need set a lower granularity.
+ * To achieve shorter pulses than 10Âµs, you simply need set a lower granularity.
  *
  *
  * WARNING
@@ -96,7 +96,7 @@
 // Memory Addresses
 #define DMA_BASE        0x3f007000
 #define DMA_CHANNEL_INC 0x100
-#define DMA_LEN         0x24
+#define DMA_LEN         DMA_CHANNEL_INC * DMA_CHANNELS
 #define PWM_BASE        0x3f20C000
 #define PWM_LEN         0x28
 #define CLK_BASE        0x3f101000
@@ -544,14 +544,14 @@ init_ctrl_data(int channel)
     uint32_t phys_gpclr0 = 0x7e200000 + 0x28;
     int i;
 
-    channels[channel].dma_reg = map_peripheral(DMA_BASE, DMA_LEN) + (DMA_CHANNEL_INC * channel);
+    channels[channel].dma_reg = map_peripheral(DMA_BASE, DMA_LEN) + channel * (DMA_CHANNEL_INC / sizeof(uint32_t));
     if (channels[channel].dma_reg == NULL)
         return EXIT_FAILURE;
 
     if (delay_hw == DELAY_VIA_PWM)
-        phys_fifo_addr = (PWM_BASE | 0x7e000000) + 0x18;
+        phys_fifo_addr = 0x7e20c000 + 0x18;
     else
-        phys_fifo_addr = (PCM_BASE | 0x7e000000) + 0x04;
+        phys_fifo_addr = 0x7e203000 + 0x04;
 
     // Reset complete per-sample gpio mask to 0
     memset(sample, 0, sizeof(channels[channel].num_samples * sizeof(uint32_t)));
