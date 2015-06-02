@@ -306,6 +306,9 @@ static void
 terminate(void)
 {
     shutdown();
+    if (soft_fatal) {
+        return;
+    }
     exit(EXIT_SUCCESS);
 }
 
@@ -337,7 +340,20 @@ static void
 setup_sighandlers(void)
 {
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 1; i < 32; i++) {
+        // whitelist non-terminating signals
+        if (i == SIGCHLD ||
+            i == SIGCONT ||
+            i == SIGTSTP ||
+            i == SIGTTIN ||
+            i == SIGTTOU ||
+            i == SIGURG ||
+            i == SIGWINCH ||
+            i == SIGPIPE || // Python handles this
+            i == SIGINT || // Python handles this
+            i == SIGIO) {
+            continue;
+        }
         struct sigaction sa;
         memset(&sa, 0, sizeof(sa));
         sa.sa_handler = (void *) terminate;
@@ -458,8 +474,8 @@ add_channel_pulse(int channel, int gpio, int width_start, int width)
     log_debug("add_channel_pulse: channel=%d, gpio=%d, start=%d, width=%d\n", channel, gpio, width_start, width);
     if (!channels[channel].virtbase)
         return fatal("Error: channel %d has not been initialized with 'init_channel(..)'\n", channel);
-    if (width_start + width > channels[channel].width_max || width_start < 0)
-        return fatal("Error: cannot add pulse to channel %d: width_start+width exceed max_width of %d\n", channels[channel].width_max);
+    if (width_start + width > channels[channel].width_max + 1 || width_start < 0)
+        return fatal("Error: cannot add pulse to channel %d: width_start+width exceed max_width of %d\n", channel, channels[channel].width_max);
 
     if ((gpio_setup & 1<<gpio) == 0)
         init_gpio(gpio);
@@ -514,7 +530,7 @@ make_pagemap(int channel)
             return fatal("rpio-pwm: Failed to read %s: %m\n", pagemap_fn);
         if (((pfn >> 55) & 0x1bf) != 0x10c)
             return fatal("rpio-pwm: Page %d not present (pfn 0x%016llx)\n", i, pfn);
-        channels[channel].page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0xc0000000;
+        channels[channel].page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0x40000000;
     }
     close(fd);
     close(memfd);
@@ -544,7 +560,7 @@ init_ctrl_data(int channel)
     uint32_t phys_gpclr0 = 0x7e200000 + 0x28;
     int i;
 
-    channels[channel].dma_reg = map_peripheral(DMA_BASE, DMA_LEN) + channel * (DMA_CHANNEL_INC / sizeof(uint32_t));
+    channels[channel].dma_reg = map_peripheral(DMA_BASE, DMA_LEN) + (DMA_CHANNEL_INC * channel);
     if (channels[channel].dma_reg == NULL)
         return EXIT_FAILURE;
 

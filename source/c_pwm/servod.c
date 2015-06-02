@@ -63,7 +63,7 @@ static uint8_t gpio_list[] = {
     4,    // P1-7
     17,    // P1-11
     18,    // P1-12
-    21,    // P1-13, P2-40
+    21,    // P1-13
     22,    // P1-15
     23,    // P1-16
     24,    // P1-18
@@ -107,15 +107,15 @@ static uint8_t gpio_list[] = {
                               PAGE_SIZE - 1) >> PAGE_SHIFT)
 
 // Memory Addresses
-#define DMA_BASE        0x3f007000
-#define DMA_LEN         0xf00
-#define PWM_BASE        0x3f20C000
+#define DMA_BASE        0x20007000
+#define DMA_LEN         0x24
+#define PWM_BASE        0x2020C000
 #define PWM_LEN         0x28
-#define CLK_BASE        0x3f101000
+#define CLK_BASE        0x20101000
 #define CLK_LEN         0xA8
-#define GPIO_BASE       0x3f200000
+#define GPIO_BASE       0x20200000
 #define GPIO_LEN        0x100
-#define PCM_BASE        0x3f203000
+#define PCM_BASE        0x20203000
 #define PCM_LEN         0x24
 
 #define DMA_NO_WIDE_BURSTS  (1<<26)
@@ -374,7 +374,7 @@ make_pagemap(void)
             fatal("rpio-pwm: Failed to read %s: %m\n", pagemap_fn);
         if (((pfn >> 55) & 0x1bf) != 0x10c)
             fatal("rpio-pwm: Page %d not present (pfn 0x%016llx)\n", i, pfn);
-        page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0xc0000000;
+        page_map[i].physaddr = (uint32_t)pfn << PAGE_SHIFT | 0x40000000;
     }
     close(fd);
     close(memfd);
@@ -392,9 +392,9 @@ init_ctrl_data(void)
     int servo, i;
 
     if (delay_hw == DELAY_VIA_PWM)
-        phys_fifo_addr = 0x7e20C000 + 0x18;
+        phys_fifo_addr = (PWM_BASE | 0x7e000000) + 0x18;
     else
-        phys_fifo_addr = 0x7e203000 + 0x04;
+        phys_fifo_addr = (PCM_BASE | 0x7e000000) + 0x04;
 
     memset(ctl->sample, 0, sizeof(ctl->sample));
     for (servo = 0 ; servo < NUM_GPIOS; servo++) {
