@@ -36,7 +36,6 @@
 
 #define BCM2708_PERI_BASE   0x20000000
 #define BCM2709_PERI_BASE   0x3f000000
-//#define GPIO_BASE           (BCM2708_PERI_BASE + 0x200000)
 #define OFFSET_FSEL         0   // 0x0000
 #define OFFSET_SET          7   // 0x001c / 4
 #define OFFSET_CLR          10  // 0x0028 / 4
@@ -101,21 +100,16 @@ setup(void)
     if ((uint32_t)gpio_mem % PAGE_SIZE)
         gpio_mem += PAGE_SIZE - ((uint32_t)gpio_mem % PAGE_SIZE);
 
-<<<<<<< HEAD
     int type = get_CPU_info();
     if (type == -1) {
         return SETUP_MMAP_FAIL;
 		}
     else if (type == 1 ){
-        gpio_map = (uint32_t *)mmap( (caddr_t)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2708_PERI_BASE + 0x200000);
+        gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2708_PERI_BASE + 0x200000);
 		}
     else{
-        gpio_map = (uint32_t *)mmap( (caddr_t)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000);
+				gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000);
     }
-=======
-    gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, GPIO_BASE);
-
->>>>>>> metachris/master
     if ((uint32_t)gpio_map < 0)
         return SETUP_MMAP_FAIL;
 
