@@ -51,13 +51,13 @@
  * PULSE WIDTH INCREMENT GRANULARITY
  * ---------------------------------
  * Another very important setting is the pulse width increment granularity, which
- * defaults to 10µs and is used for _all_ DMA channels (since its passed to the PWM
+ * defaults to 10Âµs and is used for _all_ DMA channels (since its passed to the PWM
  * timing hardware). Under the hood you need to set the pulse widths as multiples
- * of the increment-granularity. Eg. in order to set 500µs pulses with a granularity
- * setting of 10µs, you'll need to set the pulse-width as 50 (50 * 10µs = 500µs).
+ * of the increment-granularity. Eg. in order to set 500Âµs pulses with a granularity
+ * setting of 10Âµs, you'll need to set the pulse-width as 50 (50 * 10Âµs = 500Âµs).
  * Less granularity needs more DMA memory.
  *
- * To achieve shorter pulses than 10µs, you simply need set a lower granularity.
+ * To achieve shorter pulses than 10Âµs, you simply need set a lower granularity.
  *
  *
  * WARNING
@@ -306,6 +306,9 @@ static void
 terminate(void)
 {
     shutdown();
+    if (soft_fatal) {
+        return;
+    }
     exit(EXIT_SUCCESS);
 }
 
@@ -337,7 +340,20 @@ static void
 setup_sighandlers(void)
 {
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 1; i < 32; i++) {
+        // whitelist non-terminating signals
+        if (i == SIGCHLD ||
+            i == SIGCONT ||
+            i == SIGTSTP ||
+            i == SIGTTIN ||
+            i == SIGTTOU ||
+            i == SIGURG ||
+            i == SIGWINCH ||
+            i == SIGPIPE || // Python handles this
+            i == SIGINT || // Python handles this
+            i == SIGIO) {
+            continue;
+        }
         struct sigaction sa;
         memset(&sa, 0, sizeof(sa));
         sa.sa_handler = (void *) terminate;
@@ -458,8 +474,8 @@ add_channel_pulse(int channel, int gpio, int width_start, int width)
     log_debug("add_channel_pulse: channel=%d, gpio=%d, start=%d, width=%d\n", channel, gpio, width_start, width);
     if (!channels[channel].virtbase)
         return fatal("Error: channel %d has not been initialized with 'init_channel(..)'\n", channel);
-    if (width_start + width > channels[channel].width_max || width_start < 0)
-        return fatal("Error: cannot add pulse to channel %d: width_start+width exceed max_width of %d\n", channels[channel].width_max);
+    if (width_start + width > channels[channel].width_max + 1 || width_start < 0)
+        return fatal("Error: cannot add pulse to channel %d: width_start+width exceed max_width of %d\n", channel, channels[channel].width_max);
 
     if ((gpio_setup & 1<<gpio) == 0)
         init_gpio(gpio);
