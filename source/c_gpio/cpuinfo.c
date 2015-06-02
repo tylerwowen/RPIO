@@ -71,9 +71,9 @@ get_cpuinfo_revision(char *revision_hex)
     if ((strcmp(revision_hex, "0002") == 0) ||
         (strcmp(revision_hex, "0003") == 0)) {
         return 1;
-    } else if ((strcmp(revision_hex, "0010") == 0) 
-							 || (strcmp(revision_hex, "a21041") 
-							 || (strcmp(revision_hex, "a01041")) {
+    } else if (strcmp(revision_hex, "0010") == 0
+							 || strcmp(revision_hex, "a21041") == 0
+							 || strcmp(revision_hex, "a01041") == 0 ) {
         // We'll call Model B+ (0010) rev3 or Pi 2
         return 3;
     } else {
