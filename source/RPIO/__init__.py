@@ -159,6 +159,7 @@ MODEL_DATA = {
     'd': ('B', '2.0', 512, 'Egoman'),
     'e': ('B', '2.0', 512, 'Sony'),
     'f': ('B', '2.0', 512, 'Qisda'),
+<<<<<<< HEAD
     'a01041': ('Pi 2 B', '1.0', 1024, 'Sony'),
     'a21041': ('Pi 2 B', '1.0', 1024, 'EMBEST')
 }
@@ -183,9 +184,17 @@ MODEL_DATA = {
 #V=1 1
 
 # List of valid bcm gpio ids for raspberry rev1 and rev2. Used for inspect-all.
+=======
+    '10': ('B+', '1.0', 512, 'Sony')
+}
+
+# List of valid bcm gpio ids for raspberry rev1, rev2 and rev3. Used for inspect-all.
+>>>>>>> metachris/master
 GPIO_LIST_R1 = (0, 1, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 21, 22, 23, 24, 25)
 GPIO_LIST_R2 = (2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22, 23, 24, 25, \
-        27, 28, 29, 30, 31)
+                27, 28, 29, 30, 31)
+GPIO_LIST_R3 = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, \
+                18, 19, 20, 21, 22, 23, 24, 25, 26, 27)
 
 # List of board pins with extra information which board header they belong to.
 # Revision 2 boards have extra gpios on the P5 header (gpio 27-31)). Shifting
