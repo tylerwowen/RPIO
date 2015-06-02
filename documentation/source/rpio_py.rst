@@ -219,7 +219,7 @@ Additions to RPi.GPIO
 Additional Constants
 
 * ``RPIO.RPI_REVISION`` - the current board's revision (either ``1`` or ``2``)
-* ``RPIO.RPI_REVISION_HEX`` - the cpu hex revision code (``0002`` .. ``000f``)
+* ``RPIO.RPI_REVISION_HEX`` - the cpu hex revision code (``0002`` .. ``000f``) for Pi 2 (``a01041``..``a21041``)
 
 Additional Methods
 
