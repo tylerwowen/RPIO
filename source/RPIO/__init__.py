@@ -159,9 +159,9 @@ MODEL_DATA = {
     'd': ('B', '2.0', 512, 'Egoman'),
     'e': ('B', '2.0', 512, 'Sony'),
     'f': ('B', '2.0', 512, 'Qisda'),
-<<<<<<< HEAD
-    'a01041': ('Pi 2 B', '1.0', 1024, 'Sony'),
-    'a21041': ('Pi 2 B', '1.0', 1024, 'EMBEST')
+    '10': ('B+', '1.0', 512, 'Sony'),
+    'a01041': ('2B', '1.0', 1024, 'Sony'),
+    'a21041': ('2B', '1.0', 1024, 'EMBEST')
 }
 
 # Consider a parser for the new scheme 
@@ -183,13 +183,8 @@ MODEL_DATA = {
 #T=4 Pi 2 B
 #V=1 1
 
-# List of valid bcm gpio ids for raspberry rev1 and rev2. Used for inspect-all.
-=======
-    '10': ('B+', '1.0', 512, 'Sony')
-}
-
 # List of valid bcm gpio ids for raspberry rev1, rev2 and rev3. Used for inspect-all.
->>>>>>> metachris/master
+
 GPIO_LIST_R1 = (0, 1, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 21, 22, 23, 24, 25)
 GPIO_LIST_R2 = (2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22, 23, 24, 25, \
                 27, 28, 29, 30, 31)
