@@ -148,6 +148,8 @@ setup_gpio(int gpio, int direction, int pud)
     set_pullupdn(gpio, pud);
     if (direction == OUTPUT)
         *(gpio_map+offset) = (*(gpio_map+offset) & ~(7<<shift)) | (1<<shift);
+    else if (direction == ALT0)
+        *(gpio_map+offset) = (*(gpio_map+offset) & ~(7<<shift)) | (4<<shift);
     else  // direction == INPUT
         *(gpio_map+offset) = (*(gpio_map+offset) & ~(7<<shift));
 }

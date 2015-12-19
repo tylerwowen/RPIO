@@ -219,7 +219,7 @@ py_setup_channel(PyObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ii|ii", kwlist, &channel, &direction, &pud, &initial))
         return NULL;
 
-    if (direction != INPUT && direction != OUTPUT) {
+    if (direction != INPUT && direction != OUTPUT && direction != ALT0) {
         PyErr_SetString(InvalidDirectionException, "An invalid direction was passed to setup()");
         return NULL;
     }
