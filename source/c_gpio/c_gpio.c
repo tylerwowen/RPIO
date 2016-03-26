@@ -56,22 +56,22 @@
 static volatile uint32_t *gpio_map;
 
 int get_CPU_info(){
-	FILE *fp;
-	char buffer[1024];
-	char hardware[1024];
-	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
-		return -1;
-	while(!feof(fp)) {
-		fgets(buffer, sizeof(buffer) , fp);
-		sscanf(buffer, "Hardware	: %s", hardware);
-		// BCM2709 for Pi 2, change base for Pi 2
-		if (strcmp(hardware, "BCM2709") == 0){
-			return 2;
-		}
-	}
-	fclose(fp);
-	// Default for Pi 1
-	return 1;
+    FILE *fp;
+    char buffer[1024];
+    char hardware[1024];
+    if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
+        return -1;
+    while(!feof(fp)) {
+        fgets(buffer, sizeof(buffer) , fp);
+        sscanf(buffer, "Hardware    : %s", hardware);
+        // BCM2709 for Pi 2, change base for Pi 2
+        if (strcmp(hardware, "BCM2709") == 0){
+            return 2;
+        }
+    }
+    fclose(fp);
+    // Default for Pi 1
+    return 1;
 }
 
 // `short_wait` waits 150 cycles
@@ -103,12 +103,12 @@ setup(void)
     int type = get_CPU_info();
     if (type == -1) {
         return SETUP_MMAP_FAIL;
-		}
+    }
     else if (type == 1 ){
         gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2708_PERI_BASE + 0x200000);
-		}
+    }
     else{
-				gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000);
+        gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000);
     }
     if ((uint32_t)gpio_map < 0)
         return SETUP_MMAP_FAIL;
@@ -194,5 +194,5 @@ void
 cleanup(void)
 {
     // fixme - set all gpios back to input
-    munmap((caddr_t)gpio_map, BLOCK_SIZE);
+    munmap((void *)gpio_map, BLOCK_SIZE);
 }

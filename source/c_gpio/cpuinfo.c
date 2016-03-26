@@ -35,7 +35,7 @@
 // revision_hex will be four characters revision id (eg. '0004'),
 // the over-voltage header, if present, is removed (since it is
 // not consistently present on all overclocked boards).
-int 
+int
 get_cpuinfo_revision(char *revision_hex)
 {
     FILE *fp;
@@ -71,9 +71,9 @@ get_cpuinfo_revision(char *revision_hex)
     if ((strcmp(revision_hex, "0002") == 0) ||
         (strcmp(revision_hex, "0003") == 0)) {
         return 1;
-    } else if (strcmp(revision_hex, "0010") == 0
-							 || strcmp(revision_hex, "a21041") == 0
-							 || strcmp(revision_hex, "a01041") == 0 ) {
+    } else if (strcmp(revision_hex, "0010") == 0 ||
+               strcmp(revision_hex, "a21041") == 0 ||
+               strcmp(revision_hex, "a01041") == 0 ) {
         // We'll call Model B+ (0010) rev3 or Pi 2
         return 3;
     } else {
