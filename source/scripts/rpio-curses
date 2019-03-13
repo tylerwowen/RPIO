@@ -75,7 +75,7 @@ if "no_rpio" not in CMD_OPTIONS:
     RPIO.setwarnings(False)
     RPIO_VERSION = RPIO.VERSION
     def get_gpiolist():
-        if RPIO.sysinfo()[1] == 'B+':
+        if RPIO.sysinfo()[1] == 'B+' or RPIO.sysinfo()[1] == '2B' or RPIO.sysinfo()[1] == '3B':
           pins = RPIO.GPIO_LIST_R3
         elif RPIO.RPI_REVISION == 1:
           pins = RPIO.GPIO_LIST_R1

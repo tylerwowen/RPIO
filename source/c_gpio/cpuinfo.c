@@ -49,7 +49,8 @@ get_cpuinfo_revision(char *revision_hex)
     while(!feof(fp)) {
         fgets(buffer, sizeof(buffer) , fp);
         sscanf(buffer, "Hardware	: %s", hardware);
-        if (strcmp(hardware, "BCM2708") == 0)
+        // BCM2708 for Pi 1, BCM2709 for Pi 2
+        if (strcmp(hardware, "BCM2708") == 0 || strcmp(hardware, "BCM2709") == 0)
             rpi_found = 1;
         sscanf(buffer, "Revision	: %s", revision_hex);
     }
@@ -70,8 +71,12 @@ get_cpuinfo_revision(char *revision_hex)
     if ((strcmp(revision_hex, "0002") == 0) ||
         (strcmp(revision_hex, "0003") == 0)) {
         return 1;
-    } else if ((strcmp(revision_hex, "0010") == 0)) {
-        // We'll call Model B+ (0010) rev3
+    } else if (strcmp(revision_hex, "0010") == 0
+							 || strcmp(revision_hex, "a21041") == 0
+							 || strcmp(revision_hex, "a01041") == 0
+							 || strcmp(revision_hex, "a02082") == 0
+							 || strcmp(revision_hex, "a22082") == 0 ) {
+        // We'll call Model B+ (0010) rev3 or Pi 2
         return 3;
     } else {
         // assume rev 2 (0004 0005 0006 ...)

@@ -118,7 +118,7 @@ class TestSequenceFunctions(unittest.TestCase):
         logging.info("=== BCM AND BOARD NUMBERING TESTS ===")
 
         RPIO.setmode(RPIO.BCM)
-        if RPIO.sysinfo()[1] == 'B+':
+        if RPIO.sysinfo()[1] == 'B+' or RPIO.sysinfo()[1] == '2B' or RPIO.sysinfo()[1] == '3B':
             pins = RPIO.GPIO_LIST_R3
         elif RPIO.RPI_REVISION == 1:
             pins = RPIO.GPIO_LIST_R1
@@ -224,6 +224,14 @@ class TestSequenceFunctions(unittest.TestCase):
 
         logging.info("ALL DONE :)")
 
+    def test7_alt0(self):
+        logging.info(" ")
+        logging.info(" ")
+        logging.info("=== ALT0 TESTS ===")
+        print(RPIO.gpio_function(5))
+        logging.info("Setting up GPIO-%s as alt0...", GPIO_OUT)
+        RPIO.setup(5, RPIO.ALT0)
+        self.assertEqual(RPIO.gpio_function(5))
 
 if __name__ == '__main__':
     logging.info("==================================")

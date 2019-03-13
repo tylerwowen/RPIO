@@ -31,9 +31,11 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include "c_gpio.h"
+#include <stdio.h>
+#include <string.h>
 
 #define BCM2708_PERI_BASE   0x20000000
-#define GPIO_BASE           (BCM2708_PERI_BASE + 0x200000)
+#define BCM2709_PERI_BASE   0x3f000000
 #define OFFSET_FSEL         0   // 0x0000
 #define OFFSET_SET          7   // 0x001c / 4
 #define OFFSET_CLR          10  // 0x0028 / 4
@@ -52,6 +54,25 @@
 #define BLOCK_SIZE (4*1024)
 
 static volatile uint32_t *gpio_map;
+
+int get_CPU_info(){
+	FILE *fp;
+	char buffer[1024];
+	char hardware[1024];
+	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
+		return -1;
+	while(!feof(fp)) {
+		fgets(buffer, sizeof(buffer) , fp);
+		sscanf(buffer, "Hardware	: %s", hardware);
+		// BCM2709 for Pi 2, change base for Pi 2
+		if (strcmp(hardware, "BCM2709") == 0){
+			return 2;
+		}
+	}
+	fclose(fp);
+	// Default for Pi 1
+	return 1;
+}
 
 // `short_wait` waits 150 cycles
 void
@@ -79,8 +100,16 @@ setup(void)
     if ((uint32_t)gpio_mem % PAGE_SIZE)
         gpio_mem += PAGE_SIZE - ((uint32_t)gpio_mem % PAGE_SIZE);
 
-    gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, GPIO_BASE);
-
+    int type = get_CPU_info();
+    if (type == -1) {
+        return SETUP_MMAP_FAIL;
+		}
+    else if (type == 1 ){
+        gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2708_PERI_BASE + 0x200000);
+		}
+    else{
+				gpio_map = (uint32_t *)mmap( (void *)gpio_mem, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, mem_fd, BCM2709_PERI_BASE + 0x200000);
+    }
     if ((uint32_t)gpio_map < 0)
         return SETUP_MMAP_FAIL;
 
@@ -119,6 +148,8 @@ setup_gpio(int gpio, int direction, int pud)
     set_pullupdn(gpio, pud);
     if (direction == OUTPUT)
         *(gpio_map+offset) = (*(gpio_map+offset) & ~(7<<shift)) | (1<<shift);
+    else if (direction == ALT0)
+        *(gpio_map+offset) = (*(gpio_map+offset) & ~(7<<shift)) | (4<<shift);
     else  // direction == INPUT
         *(gpio_map+offset) = (*(gpio_map+offset) & ~(7<<shift));
 }
